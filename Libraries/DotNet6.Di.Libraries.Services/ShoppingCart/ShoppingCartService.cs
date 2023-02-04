@@ -1,4 +1,5 @@
-﻿using DotNet6.Di.Libraries.Services.Product.Models;
+﻿using DotNet6.Di.Libraries.Services.Product;
+using DotNet6.Di.Libraries.Services.Product.Models;
 using DotNet6.Di.Libraries.Services.ShoppingCart.Models;
 using DotNet6.Di.Libraries.Services.Storage;
 
@@ -9,6 +10,11 @@ namespace DotNet6.Di.Libraries.Services.ShoppingCart
     /// </summary>
     public class ShoppingCartService : IShoppingCartService
     {
+        /// <summary>
+        /// A private reference to the product service from the DI container.
+        /// </summary>
+        private readonly IProductService _productService;
+
         /// <summary>
         /// A private reference to the storage service from the DI container.
         /// </summary>
@@ -22,15 +28,21 @@ namespace DotNet6.Di.Libraries.Services.ShoppingCart
         /// <summary>
         /// Constructs a shopping cart service.
         /// </summary>
+        /// <param name="productService">A reference to the product service from the DI container.</param>
+        public ShoppingCartService(IProductService productService)
+        {
+            _productService = productService;
+        }
+
+        /// <summary>
+        /// Constructs a shopping cart service.
+        /// </summary>
         /// <param name="storageService">A reference to the storage service from the DI container.</param>
         public ShoppingCartService(IStorageService storageService)
         {
             _storageService = storageService;
         }
 
-        /// <summary>
-        /// Gets the current shopping cart.
-        /// </summary>
         /// <returns>The shopping cart as a <see cref="ShoppingCartModel"/> type.</returns>
         /// <exception cref="Exception">Returns an exception if the shopping cart cannot be found.</exception>
         public ShoppingCartModel Get()
@@ -61,7 +73,19 @@ namespace DotNet6.Di.Libraries.Services.ShoppingCart
         {
             return Get().Items.Count();
         }
-       
+
+        /// <summary>
+        /// Has a product been added to the shopping cart?
+        /// </summary>
+        /// <param name="sku">The unique identifier of the product.</param>
+        /// <returns>A <see cref="bool"/> type which determines whether the product has been added to the shopping cart.</returns>
+        public bool HasProduct(string sku)
+        {
+            var shoppingCart = Get();
+
+            return shoppingCart.Items.Any(i => i.Product.Sku == sku);
+        }
+
         /// <summary>
         /// Sets the unique id of the shopping cart and adds it to the storage.
         /// </summary>
