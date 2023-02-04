@@ -29,6 +29,13 @@ namespace DotNet6.Di.Libraries.Services.ShoppingCart
         int Count();
 
         /// <summary>
+        /// Has a product been added to the shopping cart?
+        /// </summary>
+        /// <param name="sku">The unique identifier of the product.</param>
+        /// <returns>A <see cref="bool"/> type which determines whether the product has been added to the shopping cart.</returns>
+        public bool HasProduct(string sku);
+
+        /// <summary>
         /// Sets the unique id of the shopping cart and adds it to the storage.
         /// </summary>
         /// <param name="id">Unique id of the shopping cart.</param>
